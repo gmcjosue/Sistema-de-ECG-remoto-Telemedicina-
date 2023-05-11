@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <script src="./plotly.min.js"></script>
+  <meta charset="UTF-8">
+	<title>MidZooECG</title>
+	<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <br><br><br><br>
+<h1>
+    <p style="color: white;">
+        Electrocardiograma
+    </p>
+</h1>
+<br>
+<div class="button">
+<button id="botonGrabacion" onclick="grabacion()">Iniciar grabación</button></div>
+<style>
+  .button {
+    text-align: right;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+  #botonGrabacion{
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    width: 150px;
+    height: 45px;
+  }
+</style>
+<div id="chart"></div>
+<script src="/socket.io/socket.io.js" charset="utf-8"></script>
+<script>
+  var socket = io.connect('34.125.27.216:5001', {'forceNew':true});//conexion con el servidor
+  dat = 0;
+  socket.on('desde_servidor', function(data) {
+    console.log(data);//imprime el valor del dato recibido
+    dat = data; //el valor se guarda en la variable 'dat' para tenerlo fuera de la funcion 'socket.on()'
+  });
+
+  //Funciones para graficar los datos recibidos
+  function getData() {
+    return Math.random();
+  } 
+  Plotly.newPlot('chart',[{
+      y:[dat],
+      //y:[getData()],
+      type:'line'
+  }]);
+
+  var cnt = 0;
+
+  setInterval(function(){
+  Plotly.extendTraces('chart',{ y:[[/*getData()*/dat]]}, [0]);
+  cnt++;
+  if(cnt > 0) {
+    Plotly.relayout('chart',{
+      xaxis: {
+      range: [cnt-500,cnt]
+      },
+      yaxis: {
+      //range: [1900,2600],
+      //tickvals: []
+      }
+    });
+  }
+  },15);//0.0002 ms para el esp32
+  
+
+//Grabacion de datos ******
+    let grabando = false;
+    const boton = document.getElementById('botonGrabacion');
+    boton.style.backgroundColor = 'green';
+    function grabacion() {
+      if (!grabando) {
+        iniciarGrabacion();
+        boton.textContent = 'Detener grabación';
+        boton.style.backgroundColor = 'red';
+        grabando = true;
+      } else {
+        detenerGrabacion();
+        boton.textContent = 'Iniciar grabación';
+        boton.style.backgroundColor = 'green';
+        grabando = false;
+      }
+    }
+//METODOS PARA LA GRABACION DE DATOS 
+    function iniciarGrabacion() {
+      console.log('Iniciando grabación...');
+      socket.emit('flag',1);
+    }
+
+    function detenerGrabacion() {
+      console.log('Deteniendo grabación...');
+      socket.emit('flag',2);
+    }
+
+</script>
+
+<header class="header">
+  <div class="container">
+  <div class="btn-menu">
+    <label for="btn-menu">☰</label>
+  </div>
+    <div class="logo">
+      <h1>Menú</h1>
+    </div>
+    <nav class="menu">
+      <a href="./index.html">Inicio</a>
+      <a href="./contacto.html">Contacto</a>
+      <a href="#" id="logout">Salir</a>
+    </nav>
+  </div>
+</header>
+<div class="capa"></div>
+<!--	--------------->
+<input type="checkbox" id="btn-menu">
+<div class="container-menu">
+<div class="cont-menu">
+  <nav>
+    <a href="./ECG.html">ECG</a>
+	  <a href="./hardware.html">Hardware</a>
+    <a href="./consulta.html">Consultar datos</a>
+  </nav>
+  <label for="btn-menu">✖️</label>
+</div>
+</div>
+
+
+</body>
+
+<script type="module">
+  // Import the functions from the SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+  import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+
+  // App Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAd92cJFRsu90p4BgqhqiXZYHo7EzzlC50",
+    authDomain: "midzooecg.firebaseapp.com",
+    databaseURL: "https://midzooecg-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "midzooecg",
+    storageBucket: "midzooecg.appspot.com",
+    messagingSenderId: "175107107214",
+    appId: "1:175107107214:web:8be329550d1a9658d81cdf"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth();
+
+const btnSalir = document.getElementById("logout");
+
+btnSalir.addEventListener('click', (e) => {
+      e.preventDefault()
+      signOut(auth).then(() => {
+        }).catch((error) =>{
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          //alert(errorMessage);
+        });
+  })
+
+
+/*onAuthStateChanged(auth, (user) => {
+if (user) {
+  // User is signed in
+  const uid = user.uid;
+} else {
+  // User is signed out
+  alert("No ha iniciado sesión");
+  location.href = "../index.html";
+}
+});*/
+</script>
+
+</html>

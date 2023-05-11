@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: url(./images/background.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    text-align: center;
+    padding: 20px 25px;
+    box-shadow: 0 5px 10px rgba(5, 86, 66, 0.7);
+}
+
+form .title {
+    color: #093f37;
+    font-size: 35px;
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+form label {
+    margin-bottom: 35px;
+}
+
+form label .fa-solid {
+    font-size: 20px;
+    color: #148772;
+    margin-right: 10px;
+}
+
+form label input {
+    outline: none;
+    border: none;
+    color: #252525;
+    border-bottom: solid 1px #189b8e;
+    padding: 0 5px;
+    font-size: 18px;
+}
+
+form label input::placeholder {
+    color: rgba(51, 137, 115, 0.441);
+}
+
+
+form .link {
+    color: #252525;
+    margin-bottom: 15px;
+}
+
+form button {
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    background: linear-gradient(to right, #23c0cb, #1bb282);
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+button.social-signin.google {
+    margin-top: 20px;
+    color: #FFF;
+    background: linear-gradient(to right, #891818, #db5a28);
+    font-family: 'Roboto', sans-serif;
+    transition: 0.2s ease;
+    cursor: pointer;
+  }
+
+button.registro {
+    margin-top: 20px;
+  }
